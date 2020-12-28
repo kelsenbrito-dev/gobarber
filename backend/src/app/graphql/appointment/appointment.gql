@@ -1,0 +1,27 @@
+scalar Timestamp
+
+type Appointment {
+    _id: ID!
+    provider: User!
+    date: Timestamp!
+    createdAt: Timestamp
+    updatedAt: Timestamp
+}
+
+input AppointmentInput {
+    provider: ID!
+    date: Timestamp!
+    createdAt: Timestamp
+    updatedAt: Timestamp
+}
+
+type Query {
+    appointments: [Appointment!]!
+    appointment(date: Timestamp!): Appointment!
+}
+ 
+type Mutation {
+    createAppointment(data: AppointmentInput!): Appointment!
+    updateAppointment(id: ID!, data: AppointmentInput!): Appointment!
+    deleteAppointment(id: ID!): Boolean
+}
