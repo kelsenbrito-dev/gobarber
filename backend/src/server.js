@@ -54,9 +54,9 @@ const createServer = async () => {
         server.applyMiddleware({ app })
         
         // inicia a aplicação na porta 4000
-        app.listen(3333, () =>
+        app.listen(4000, () =>
             console.log(
-                `🚀 Server ready at http://localhost:3333${server.graphqlPath}`
+                `🚀 Server ready at http://localhost:4000${server.graphqlPath}`
             )
         )
     } catch (error) {
