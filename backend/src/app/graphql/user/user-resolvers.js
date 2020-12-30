@@ -7,7 +7,7 @@ import generator from '../../../helpers/generator';
 export default {
     Query: {
         users: (_, __, { user }) => {
-            if(!user) throw new UserInputError('Você não está autenticado.');
+            //if(!user) throw new UserInputError('Você não está autenticado.');
 
             return User.find();
         },

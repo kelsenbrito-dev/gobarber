@@ -14,7 +14,7 @@ const Input: React.FC<IInputProps> = ({ name, icon: Icon, ...props }) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const [ isFocused, setIsFocused ] = useState(false);
     const [ isFilled, setIsFilled ] = useState(false);
-    const [ isErrored, setIsErrored ] = useState(false);
+    //const [ isErrored, setIsErrored ] = useState(false);
     const { fieldName, defaultValue, error, registerField } = useField(name);
 
     const handleInputFocus = useCallback(() =>{
