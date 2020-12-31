@@ -3,15 +3,15 @@ import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { Container, Content, Background, AnimationContainer } from './styles';
 import { useAuth } from '../../hooks/auth';
-import { useToast } from '../../hooks/toast';
 import getValidationErrors from '../../utils/getValidationErrors';
 import logo from '../../assets/logo.svg';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
+import { useToast } from '../../hooks/toast';
 
 interface ISignInFormData {
     email: string;
@@ -20,8 +20,10 @@ interface ISignInFormData {
 
 const SignIn: React.FC = () => {
     const formRef = useRef<FormHandles>(null);
-    const { signIn } = useAuth();
+    const { signIn, user } = useAuth();
+
     const { addToast } = useToast();
+    const history = useHistory();
 
     const handleSubmit = useCallback(async (data: ISignInFormData) => {
         try {
@@ -38,20 +40,25 @@ const SignIn: React.FC = () => {
                 email: data.email,
                 password: data.password
             });
+
+            console.log(user);
+            
+
+            history.push('/dashboard');
         } catch (err) {
             if(err instanceof Yup.ValidationError){
                 const errors = getValidationErrors(err);
                 formRef.current?.setErrors(errors);
                 return;
             }
-            
-            addToast({ 
-                type: 'success',
+
+            addToast({
+                type: 'error',
                 title: 'Erro na autenticação',
-                description: 'Ocorreu um erro ao fazer login, cheque as credenciais.'
+                description: 'Ocorreu um error ao fazer login, cheque as credenciais.',
             });
         }
-    }, [signIn, addToast]);
+    }, [signIn, addToast, history, user]);
 
     return (
         <Container>

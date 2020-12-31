@@ -27,6 +27,7 @@ interface IAuthContextData {
 const AuthContext = createContext<IAuthContextData>({} as IAuthContextData);
 
 const AuthProvider: React.FC = ({ children }) => {
+
     const [data, setData] = useState<IAuthState>(() => {
         const user = localStorage.getItem('@GoBarber:user');
         if (user) {
@@ -43,7 +44,8 @@ const AuthProvider: React.FC = ({ children }) => {
                     login(email: $email, password: $password){
                         _id, name, email token
                     }
-            }`,
+                }
+            `,
             variables: {
                 email: email,
                 password: password
@@ -60,7 +62,6 @@ const AuthProvider: React.FC = ({ children }) => {
                 setData({ user });
             }
         });
-
     }, []);
 
     const signOut = useCallback(() => {
