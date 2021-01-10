@@ -1,5 +1,9 @@
 {
+    "watch": [
+        "src"
+    ],
     "execMap": {
-        "js": "node -r dotenv/config -r sucrase/register"
-    }
+        "ts": "sucrase-node src/server.ts -r dotenv/config -r sucrase/register"
+    },
+    "ext": "ts"
 }

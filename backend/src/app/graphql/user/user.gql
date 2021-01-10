@@ -32,3 +32,7 @@ type Mutation {
     updateUser(_id: ID!, data: UserInput!): User!
     deleteUser(_id: ID!): Boolean
 }
+
+type Subscription {
+    userAdded: User!
+}
