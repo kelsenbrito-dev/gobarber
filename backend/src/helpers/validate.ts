@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import { UserInputError } from 'apollo-server'
 import authConfig from '../config/auth';
 
 export default (request: any) => {

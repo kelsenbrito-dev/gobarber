@@ -1,23 +1,27 @@
-const USER_ADDED = 'USER_ADDED';
+import channel from '../../channel';
 
 export default {
     Query: {
+        login: async (_, { email, password }, { usuarioService }) => {
+            return await usuarioService.login(email, password);
+        },
+        
         users: (_, __, { user, usuarioService }) => {
             return usuarioService.users(user);
         },
 
         user: (_, { _id }, { user, usuarioService }) => {
-            return usuarioService.user(_id, user)
+            return usuarioService.user(_id, user);
+        },
+
+        resetPassword: (_, { email }, { usuarioService }) => {
+            return usuarioService.resetPassword(email);
         },
     },
 
     Mutation: {
-        login: async (_, { email, password }, { usuarioService }) => {
-            return await usuarioService.login(email, password);
-        },
-
         createUser: async (_, { data }, { usuarioService, pubsub }) => {
-            return await usuarioService.createUser(data, pubsub, USER_ADDED);
+            return await usuarioService.createUser(data, pubsub, channel.USER_ADDED);
         },
 
         updateUser: async (_, { _id, data }, { user, usuarioService }) => {
@@ -31,7 +35,7 @@ export default {
 
     Subscription: {
         userAdded: {
-            subscribe: (_, __, { pubsub }) => pubsub.asyncIterator([USER_ADDED]),
+            subscribe: (_, __, { pubsub }) => pubsub.asyncIterator([channel.USER_ADDED]),
         },
     }
 };

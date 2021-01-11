@@ -4,7 +4,7 @@ type User {
     _id: ID!
     name: String!
     email: String!
-    password: String!
+    password: String
     avatar: String
     token: String
     createdAt: Timestamp
@@ -22,12 +22,13 @@ input UserInput {
 }
 
 type Query {
+    login(email: String!, password: String!): User!
     users: [User!]!
     user(_id: ID!): User!
+    resetPassword(email: String!): Boolean
 }
  
 type Mutation {
-    login(email: String!, password: String!): User!
     createUser(data: UserInput!): User!
     updateUser(_id: ID!, data: UserInput!): User!
     deleteUser(_id: ID!): Boolean

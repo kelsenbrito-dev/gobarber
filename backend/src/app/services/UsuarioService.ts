@@ -1,8 +1,10 @@
 import { UserInputError } from 'apollo-server-express'
 import bcrypt from 'bcryptjs';
+import generatePassword from 'generate-password';
 
 import generator from '../../helpers/generator';
 import User from '../models/User';
+import SendMail from '../utils/SendEmail';
 
 const UsuarioService = {
     users(user) {
@@ -27,10 +29,52 @@ const UsuarioService = {
             throw new UserInputError(`E-mail não encontrado: ${email}`, { email });
         }else if(!bcrypt.compareSync(password, user.password)){
             throw new UserInputError('Senha incorreta.');
-        }else{
-            user.token = generator.createToken(user);
-            return user;
         }
+        user.token = generator.createToken(user);
+        return user;
+    },
+
+    async resetPassword(email) {
+        try {
+            const user = await User.findOne({ email });
+            if(!user){
+                throw new UserInputError(`E-mail não encontrado: ${email}`, { email });
+            }
+
+            const password = generatePassword.generate({
+                length: 8,
+                numbers: true
+            });
+
+            await User.findOneAndUpdate({ _id: user._id }, { password: password }, { new: true });
+
+            await SendMail({
+                to: 'kelsen.brito@bbts.com.br', // <<= alterar para variável "email"
+                subject: 'GoBarber - Senha alterada com sucesso.', 
+                html: `Olá , <strong>${user.name}</strong>! <br>Sua nova senha é: <strong>${password}</strong>`
+            });
+        } catch (error) {
+            throw new Error(error);
+        }
+        return true;
+    },
+
+    async forgotPassword(email) {
+        try {
+            const user = await User.findOne({ email });
+            if(!user){
+                throw new UserInputError(`E-mail não encontrado: ${email}`, { email });
+            }
+
+            await SendMail({
+                to: 'kelsen.brito@bbts.com.br', // <<= alterar para variável "email"
+                subject: 'GoBarber - Recuperação de senha.', 
+                html: `Olá , <strong>${user.name}</strong>! <br>Sua senha é: <strong>${password}</strong>`
+            });
+        } catch (error) {
+            throw new Error(error);
+        }
+        return true;
     },
 
     async createUser(data, pubsub, topic) {
@@ -50,6 +94,12 @@ const UsuarioService = {
         });
 
         pubsub.publish(topic, { userAdded: user });
+        
+        SendMail({
+            to: 'kelsen.brito@bbts.com.br', // <<= alterar para variável "email"
+            subject: 'GoBarber - Cadastro realizado com sucesso.', 
+            html: `Olá , <strong>${name}</strong>! <br>Seu cadastro foi realizados com sucesso para o e-mail: <strong>${email}</strong>`}
+        );
 
         return user;
     },
@@ -67,7 +117,7 @@ const UsuarioService = {
         if(!user) throw new UserInputError('Você não está autenticado.');
 
         return !!(await User.findByIdAndDelete(_id));
-    }
+    },
 
 };
 
